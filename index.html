@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Campus Management Portal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="login-view" class="login-view">
+      <div class="brand-block">
+        <div class="brand-mark" aria-hidden="true"><span></span></div>
+        <p class="eyebrow">College Digital Office</p>
+        <h1>Campus Management Portal</h1>
+        <p class="lead">A single place for student services, teacher classroom tools, and administration workflows.</p>
+      </div>
+
+      <div class="login-card">
+        <div class="role-tabs" aria-label="Choose login type">
+          <button class="active" type="button" data-login-tab="student">Student</button>
+          <button type="button" data-login-tab="management">Management</button>
+        </div>
+
+        <form id="student-login" class="login-form" autocomplete="off">
+          <label class="field">
+            <span>Roll number</span>
+            <input id="student-roll" type="text" required>
+          </label>
+          <label class="field">
+            <span>Date of birth</span>
+            <input id="student-dob" type="date" required>
+          </label>
+          <button class="primary-button" type="submit">Open Student Page</button>
+        </form>
+
+        <form id="management-login" class="login-form hidden" autocomplete="off">
+          <div class="role-tabs compact-tabs" aria-label="Choose management role">
+            <button class="active" type="button" data-management-role="teacher">Teacher</button>
+            <button type="button" data-management-role="admin">Administration</button>
+          </div>
+          <label class="field">
+            <span>Username</span>
+            <input id="management-username" type="text" required>
+          </label>
+          <label class="field">
+            <span>Password</span>
+            <input id="management-password" type="password" required>
+          </label>
+          <button class="primary-button" type="submit">Open Management Page</button>
+        </form>
+
+        <p id="login-message" class="form-message" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section id="student-view" class="workspace hidden">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Student Page</p>
+          <h2 id="student-heading">Student Dashboard</h2>
+        </div>
+        <div class="actions">
+          <button id="student-print" class="ghost-button" type="button">Print</button>
+          <button class="danger-button logout-button" type="button">Logout</button>
+        </div>
+      </header>
+
+      <nav class="section-tabs" aria-label="Student sections">
+        <button class="active" type="button" data-student-section="profile">Profile</button>
+        <button type="button" data-student-section="news">Campus News</button>
+        <button type="button" data-student-section="schedule">Exam Schedule</button>
+        <button type="button" data-student-section="assessments">Assessments</button>
+        <button type="button" data-student-section="classroom">Classroom</button>
+        <button type="button" data-student-section="results">Results</button>
+        <button type="button" data-student-section="review">Environment Review</button>
+      </nav>
+
+      <section id="student-profile" class="content-panel"></section>
+      <section id="student-news" class="content-panel hidden"></section>
+      <section id="student-schedule" class="content-panel hidden"></section>
+      <section id="student-assessments" class="content-panel hidden"></section>
+      <section id="student-classroom" class="content-panel hidden"></section>
+      <section id="student-results" class="content-panel hidden"></section>
+      <section id="student-review" class="content-panel hidden">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Campus Experience</p>
+            <h3>Review Of Environment</h3>
+          </div>
+        </div>
+        <form id="review-form" class="stack-form" autocomplete="off">
+          <div class="two-col">
+            <label class="field">
+              <span>Rating</span>
+              <select id="review-rating" required>
+                <option value="Excellent">Excellent</option>
+                <option value="Good">Good</option>
+                <option value="Average">Average</option>
+                <option value="Needs Improvement">Needs Improvement</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Area</span>
+              <select id="review-area" required>
+                <option value="Classroom">Classroom</option>
+                <option value="Campus Cleanliness">Campus Cleanliness</option>
+                <option value="Library">Library</option>
+                <option value="Lab">Lab</option>
+                <option value="Transport">Transport</option>
+                <option value="Hostel">Hostel</option>
+              </select>
+            </label>
+          </div>
+          <label class="field">
+            <span>Review</span>
+            <textarea id="review-text" rows="5" required></textarea>
+          </label>
+          <button class="primary-button" type="submit">Submit Review</button>
+          <p id="review-message" class="form-message"></p>
+        </form>
+      </section>
+    </section>
+
+    <section id="teacher-view" class="workspace hidden">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Teachers Page</p>
+          <h2>Classroom Management</h2>
+        </div>
+        <button class="danger-button logout-button" type="button">Logout</button>
+      </header>
+
+      <div class="filters-row">
+        <label class="field">
+          <span>Department</span>
+          <select id="teacher-department"></select>
+        </label>
+        <label class="field">
+          <span>Class</span>
+          <select id="teacher-class"></select>
+        </label>
+      </div>
+
+      <nav class="section-tabs" aria-label="Teacher sections">
+        <button class="active" type="button" data-teacher-section="students">Student Details</button>
+        <button type="button" data-teacher-section="attendance">Attendance</button>
+        <button type="button" data-teacher-section="assessments">Assessments</button>
+        <button type="button" data-teacher-section="classroom">Classroom</button>
+      </nav>
+
+      <section id="teacher-students-panel" class="content-panel"></section>
+
+      <section id="teacher-attendance-panel" class="content-panel hidden">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Daily Register</p>
+            <h3>Take Attendance</h3>
+          </div>
+          <label class="field compact-field">
+            <span>Date</span>
+            <input id="attendance-date" type="date">
+          </label>
+        </div>
+        <form id="attendance-form" class="stack-form">
+          <div id="attendance-list" class="records-list"></div>
+          <button class="primary-button" type="submit">Save Attendance</button>
+          <p id="attendance-message" class="form-message"></p>
+        </form>
+      </section>
+
+      <section id="teacher-assessments-panel" class="content-panel hidden">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Student Work</p>
+            <h3>Give Assessments</h3>
+          </div>
+        </div>
+        <form id="assessment-form" class="stack-form" autocomplete="off">
+          <div class="two-col">
+            <label class="field">
+              <span>Title</span>
+              <input id="assessment-title" type="text" required>
+            </label>
+            <label class="field">
+              <span>Due date</span>
+              <input id="assessment-due" type="date" required>
+            </label>
+          </div>
+          <label class="field">
+            <span>Instructions</span>
+            <textarea id="assessment-description" rows="4" required></textarea>
+          </label>
+          <button class="primary-button" type="submit">Assign To Selected Class</button>
+          <p id="assessment-message" class="form-message"></p>
+        </form>
+        <div id="teacher-assessments-list" class="cards-grid"></div>
+      </section>
+
+      <section id="teacher-classroom-panel" class="content-panel hidden">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Classroom</p>
+            <h3>Announcements</h3>
+          </div>
+        </div>
+        <form id="classroom-form" class="stack-form" autocomplete="off">
+          <label class="field">
+            <span>Announcement title</span>
+            <input id="classroom-title" type="text" required>
+          </label>
+          <label class="field">
+            <span>Message</span>
+            <textarea id="classroom-message" rows="4" required></textarea>
+          </label>
+          <button class="primary-button" type="submit">Post To Classroom</button>
+          <p id="classroom-post-message" class="form-message"></p>
+        </form>
+        <div id="teacher-classroom-list" class="cards-grid"></div>
+      </section>
+    </section>
+
+    <section id="admin-view" class="workspace hidden">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Administration Page</p>
+          <h2>College Administration</h2>
+        </div>
+        <div class="actions">
+          <button id="export-json" class="ghost-button" type="button">Export JSON</button>
+          <button id="export-csv" class="ghost-button" type="button">Export CSV</button>
+          <button class="danger-button logout-button" type="button">Logout</button>
+        </div>
+      </header>
+
+      <div class="stats-grid">
+        <div><span>Students</span><strong id="stat-students">0</strong></div>
+        <div><span>Staff</span><strong id="stat-staff">0</strong></div>
+        <div><span>Departments</span><strong id="stat-departments">0</strong></div>
+        <div><span>Reviews</span><strong id="stat-reviews">0</strong></div>
+      </div>
+
+      <nav class="section-tabs admin-tabs" aria-label="Administration sections">
+        <button class="active" type="button" data-admin-section="admission">Student Admission</button>
+        <button type="button" data-admin-section="staff">Staff Management</button>
+        <button type="button" data-admin-section="reviews">Student Reviews</button>
+        <button type="button" data-admin-section="records">Editing Records</button>
+        <button type="button" data-admin-section="results">Publishing Results</button>
+        <button type="button" data-admin-section="structure">Departments & Classes</button>
+        <button type="button" data-admin-section="parents">Parents Association</button>
+        <button type="button" data-admin-section="news">News & Exams</button>
+      </nav>
+
+      <section id="admin-admission" class="content-panel"></section>
+      <section id="admin-staff" class="content-panel hidden"></section>
+      <section id="admin-reviews" class="content-panel hidden"></section>
+      <section id="admin-records" class="content-panel hidden"></section>
+      <section id="admin-results" class="content-panel hidden"></section>
+      <section id="admin-structure" class="content-panel hidden"></section>
+      <section id="admin-parents" class="content-panel hidden"></section>
+      <section id="admin-news" class="content-panel hidden"></section>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
