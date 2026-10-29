@@ -7,6 +7,15 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="utility-bar" aria-label="Portal options">
+    <button id="settings-toggle" class="utility-button" type="button" aria-haspopup="dialog" aria-controls="settings-dialog">
+      <span aria-hidden="true">⚙</span><span>Settings</span>
+    </button>
+    <button id="about-toggle" class="utility-button" type="button" aria-haspopup="dialog" aria-controls="about-dialog">
+      <span aria-hidden="true">i</span><span>About</span>
+    </button>
+  </div>
+
   <main class="app-shell">
     <section id="login-view" class="login-view">
       <div class="brand-block">
@@ -251,16 +260,501 @@
         <button type="button" data-admin-section="news">News & Exams</button>
       </nav>
 
-      <section id="admin-admission" class="content-panel"></section>
-      <section id="admin-staff" class="content-panel hidden"></section>
-      <section id="admin-reviews" class="content-panel hidden"></section>
-      <section id="admin-records" class="content-panel hidden"></section>
-      <section id="admin-results" class="content-panel hidden"></section>
-      <section id="admin-structure" class="content-panel hidden"></section>
-      <section id="admin-parents" class="content-panel hidden"></section>
-      <section id="admin-news" class="content-panel hidden"></section>
+      <section id="admin-admission" class="content-panel">
+        <div class="panel-layout">
+          <form id="student-form" class="stack-form" autocomplete="off">
+            <input type="hidden" id="editing-student-roll" value="">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Registration</p>
+                <h3 id="student-editor-title">Admit Student</h3>
+              </div>
+              <button type="button" id="reset-student-form" class="ghost-button compact">Reset</button>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Full Name</span>
+                <input id="student-name-input" type="text" required>
+              </label>
+              <label class="field">
+                <span>Roll Number</span>
+                <input id="student-roll-input" type="text" required>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Date of Birth</span>
+                <input id="student-dob-input" type="date" required>
+              </label>
+              <label class="field">
+                <span>Email Address</span>
+                <input id="student-email-input" type="email">
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Department</span>
+                <select id="student-department-input" required></select>
+              </label>
+              <label class="field">
+                <span>Class</span>
+                <select id="student-class-input" required></select>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Student Phone</span>
+                <input id="student-phone-input" type="tel">
+              </label>
+              <label class="field">
+                <span>Parent Name</span>
+                <input id="student-parent-input" type="text">
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Parent Phone</span>
+                <input id="student-parent-phone-input" type="tel">
+              </label>
+              <label class="field">
+                <span>Admission Type</span>
+                <select id="admission-type-input">
+                  <option value="Regular">Regular</option>
+                  <option value="Lateral">Lateral Entry</option>
+                </select>
+              </label>
+            </div>
+            <label class="field">
+              <span>Address</span>
+              <textarea id="student-address-input" rows="2"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Save Student Record</button>
+            <p id="student-form-message" class="form-message" aria-live="polite"></p>
+          </form>
+
+          <div class="list-section">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Directory</p>
+                <h3>Admitted Students</h3>
+              </div>
+              <label class="field compact-field">
+                <input id="student-search" type="search" placeholder="Search students...">
+              </label>
+            </div>
+            <div id="admin-student-list" class="records-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-staff" class="content-panel hidden">
+        <div class="panel-layout">
+          <form id="staff-form" class="stack-form" autocomplete="off">
+            <input type="hidden" id="editing-staff-id" value="">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Staff Directory</p>
+                <h3 id="staff-editor-title">Add Staff</h3>
+              </div>
+              <button type="button" id="reset-staff-form" class="ghost-button compact">Reset</button>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Staff Name</span>
+                <input id="staff-name-input" type="text" required>
+              </label>
+              <label class="field">
+                <span>Role</span>
+                <select id="staff-role-input" required>
+                  <option value="Teacher">Teacher</option>
+                  <option value="Administration">Administration</option>
+                  <option value="Staff">Staff</option>
+                </select>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Username</span>
+                <input id="staff-username-input" type="text" required>
+              </label>
+              <label class="field">
+                <span>Password</span>
+                <input id="staff-password-input" type="password" required>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Department</span>
+                <select id="staff-department-input"></select>
+              </label>
+              <label class="field">
+                <span>Class Assigned</span>
+                <select id="staff-class-input"></select>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Subject / Spec</span>
+                <input id="staff-subject-input" type="text">
+              </label>
+              <label class="field">
+                <span>Phone</span>
+                <input id="staff-phone-input" type="tel">
+              </label>
+            </div>
+            <button class="primary-button" type="submit">Save Staff Member</button>
+            <p id="staff-form-message" class="form-message" aria-live="polite"></p>
+          </form>
+
+          <div class="list-section">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Faculty & Admin</p>
+                <h3>Staff List</h3>
+              </div>
+            </div>
+            <div id="staff-list" class="records-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-reviews" class="content-panel hidden">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Feedback</p>
+            <h3>Student Environment Reviews</h3>
+          </div>
+        </div>
+        <div id="reviews-list" class="cards-grid"></div>
+      </section>
+
+      <section id="admin-records" class="content-panel hidden">
+        <div class="panel-title">
+          <div>
+            <p class="eyebrow">Student Records</p>
+            <h3>Manage & Edit Student Profiles</h3>
+          </div>
+          <label class="field compact-field">
+            <input id="record-search" type="search" placeholder="Filter records...">
+          </label>
+        </div>
+        <div id="records-editor-list" class="records-list"></div>
+      </section>
+
+      <section id="admin-results" class="content-panel hidden">
+        <div class="panel-layout">
+          <form id="result-form" class="stack-form" autocomplete="off">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Examinations</p>
+                <h3>Publish Student Result</h3>
+              </div>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Department</span>
+                <select id="result-department-input"></select>
+              </label>
+              <label class="field">
+                <span>Class</span>
+                <select id="result-class-input"></select>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Student</span>
+                <select id="result-student-input" required></select>
+              </label>
+              <label class="field">
+                <span>Exam Name / Semester</span>
+                <input id="result-exam-input" type="text" placeholder="e.g. End Semester Exam - Sem 1" required>
+              </label>
+            </div>
+            
+            <div class="panel-title">
+              <h4>Subject Marks</h4>
+              <button type="button" id="add-result-subject" class="ghost-button compact">+ Add Subject</button>
+            </div>
+            <div id="result-subjects" class="stack-form"></div>
+
+            <button class="primary-button" type="submit">Publish Result</button>
+            <p id="result-form-message" class="form-message" aria-live="polite"></p>
+          </form>
+
+          <div class="list-section">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Published Marks</p>
+                <h3>Recent Results</h3>
+              </div>
+            </div>
+            <div id="results-list" class="records-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-structure" class="content-panel hidden">
+        <div class="panel-layout">
+          <div class="stack-form">
+            <form id="department-form" class="stack-form" autocomplete="off">
+              <input type="hidden" id="editing-department-id" value="">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Academics</p>
+                  <h3 id="department-editor-title">Add Department</h3>
+                </div>
+                <button type="button" id="reset-department-form" class="ghost-button compact">Reset</button>
+              </div>
+              <div class="two-col">
+                <label class="field">
+                  <span>Department Name</span>
+                  <input id="department-name-input" type="text" placeholder="e.g. Computer Science" required>
+                </label>
+                <label class="field">
+                  <span>Code</span>
+                  <input id="department-code-input" type="text" placeholder="e.g. CSE" required>
+                </label>
+              </div>
+              <button class="primary-button" type="submit">Save Department</button>
+              <p id="department-form-message" class="form-message" aria-live="polite"></p>
+            </form>
+            <div id="department-list" class="records-list"></div>
+          </div>
+
+          <div class="stack-form">
+            <form id="class-form" class="stack-form" autocomplete="off">
+              <input type="hidden" id="editing-class-id" value="">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Classrooms</p>
+                  <h3 id="class-editor-title">Add Class</h3>
+                </div>
+                <button type="button" id="reset-class-form" class="ghost-button compact">Reset</button>
+              </div>
+              <label class="field">
+                <span>Department</span>
+                <select id="class-department-input" required></select>
+              </label>
+              <div class="two-col">
+                <label class="field">
+                  <span>Class / Degree</span>
+                  <input id="class-name-input" type="text" placeholder="e.g. B.E. CSE" required>
+                </label>
+                <label class="field">
+                  <span>Year</span>
+                  <input id="class-year-input" type="text" placeholder="e.g. 1" required>
+                </label>
+              </div>
+              <label class="field">
+                <span>Section</span>
+                <input id="class-section-input" type="text" placeholder="e.g. A" required>
+              </label>
+              <button class="primary-button" type="submit">Save Class</button>
+              <p id="class-form-message" class="form-message" aria-live="polite"></p>
+            </form>
+            <div id="class-list" class="records-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-parents" class="content-panel hidden">
+        <div class="panel-layout">
+          <form id="parent-form" class="stack-form" autocomplete="off">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">PTA Council</p>
+                <h3>Add PTA Member</h3>
+              </div>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>Parent Name</span>
+                <input id="parent-name-input" type="text" required>
+              </label>
+              <label class="field">
+                <span>Student Roll Number</span>
+                <input id="parent-roll-input" type="text" required>
+              </label>
+            </div>
+            <div class="two-col">
+              <label class="field">
+                <span>PTA Role</span>
+                <input id="parent-role-input" type="text" placeholder="e.g. Representative" required>
+              </label>
+              <label class="field">
+                <span>Contact Number</span>
+                <input id="parent-contact-input" type="tel" required>
+              </label>
+            </div>
+            <label class="field">
+              <span>Notes</span>
+              <textarea id="parent-notes-input" rows="2"></textarea>
+            </label>
+            <button class="primary-button" type="submit">Add PTA Member</button>
+            <p id="parent-form-message" class="form-message" aria-live="polite"></p>
+          </form>
+
+          <div class="list-section">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Directory</p>
+                <h3>PTA Members</h3>
+              </div>
+            </div>
+            <div id="parents-list" class="records-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="admin-news" class="content-panel hidden">
+        <div class="panel-layout">
+          <div class="stack-form">
+            <form id="news-form" class="stack-form" autocomplete="off">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Bulletins</p>
+                  <h3>Post News Announcement</h3>
+                </div>
+              </div>
+              <div class="two-col">
+                <label class="field">
+                  <span>News Title</span>
+                  <input id="news-title-input" type="text" required>
+                </label>
+                <label class="field">
+                  <span>Target Audience</span>
+                  <select id="news-audience-input">
+                    <option value="All Students & Staff">All Students & Staff</option>
+                    <option value="Students Only">Students Only</option>
+                    <option value="Teachers Only">Teachers Only</option>
+                  </select>
+                </label>
+              </div>
+              <label class="field">
+                <span>Content</span>
+                <textarea id="news-body-input" rows="3" required></textarea>
+              </label>
+              <button class="primary-button" type="submit">Post Bulletin</button>
+              <p id="news-form-message" class="form-message" aria-live="polite"></p>
+            </form>
+            <div id="news-list" class="cards-grid"></div>
+          </div>
+
+          <div class="stack-form">
+            <form id="schedule-form" class="stack-form" autocomplete="off">
+              <div class="panel-title">
+                <div>
+                  <p class="eyebrow">Timetable</p>
+                  <h3>Schedule Exam</h3>
+                </div>
+              </div>
+              <div class="two-col">
+                <label class="field">
+                  <span>Exam Title</span>
+                  <input id="schedule-exam-input" type="text" placeholder="e.g. End Semester Exam" required>
+                </label>
+                <label class="field">
+                  <span>Date</span>
+                  <input id="schedule-date-input" type="date" required>
+                </label>
+              </div>
+              <div class="two-col">
+                <label class="field">
+                  <span>Department</span>
+                  <select id="schedule-department-input"></select>
+                </label>
+                <label class="field">
+                  <span>Class</span>
+                  <select id="schedule-class-input"></select>
+                </label>
+              </div>
+              <label class="field">
+                <span>Exam Details / Venue</span>
+                <textarea id="schedule-details-input" rows="2" required></textarea>
+              </label>
+              <button class="primary-button" type="submit">Publish Schedule</button>
+              <p id="schedule-form-message" class="form-message" aria-live="polite"></p>
+            </form>
+            <div id="schedule-list" class="cards-grid"></div>
+          </div>
+        </div>
+      </section>
     </section>
   </main>
+
+  <dialog id="settings-dialog" class="portal-dialog" aria-labelledby="settings-title">
+    <form method="dialog" class="dialog-content">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">Portal preferences</p>
+          <h2 id="settings-title">Settings</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close settings" type="submit">×</button>
+      </div>
+
+      <label class="field">
+        <span>Theme</span>
+        <select id="theme-select">
+          <option value="system">Use device setting</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </label>
+
+      <label class="setting-toggle" for="large-text-toggle">
+        <span>
+          <strong>Larger text</strong>
+          <small>Increase the default reading size.</small>
+        </span>
+        <input id="large-text-toggle" type="checkbox" role="switch">
+      </label>
+
+      <label class="setting-toggle" for="reduced-motion-toggle">
+        <span>
+          <strong>Reduce motion</strong>
+          <small>Limit interface transitions.</small>
+        </span>
+        <input id="reduced-motion-toggle" type="checkbox" role="switch">
+      </label>
+
+      <div class="dialog-actions">
+        <button id="reset-preferences" class="ghost-button" type="button">Restore defaults</button>
+        <button class="primary-button" value="close" type="submit">Done</button>
+      </div>
+      <p id="settings-message" class="form-message" aria-live="polite"></p>
+    </form>
+  </dialog>
+
+  <dialog id="about-dialog" class="portal-dialog" aria-labelledby="about-title">
+    <form method="dialog" class="dialog-content">
+      <div class="dialog-heading">
+        <div>
+          <p class="eyebrow">Campus Management Portal</p>
+          <h2 id="about-title">About this demo</h2>
+        </div>
+        <button class="icon-button" value="cancel" aria-label="Close about dialog" type="submit">×</button>
+      </div>
+
+      <p class="dialog-copy">A browser-only demonstration of student, teacher, and administration workflows. Records and preferences are stored only in this browser.</p>
+
+      <div class="demo-accounts">
+        <p class="eyebrow">Demo sign-in accounts</p>
+        <dl>
+          <div><dt>Student</dt><dd><code>2026CSE01</code> · DOB <code>2004-05-15</code></dd></div>
+          <div><dt>Teacher</dt><dd><code>teacher</code> · <code>Teacher@2026</code></dd></div>
+          <div><dt>Administration</dt><dd><code>admin</code> · <code>Admin@2026</code></dd></div>
+        </dl>
+      </div>
+
+      <div class="dialog-actions">
+        <button id="copy-demo-accounts" class="ghost-button" type="button">Copy demo accounts</button>
+        <button class="primary-button" value="close" type="submit">Close</button>
+      </div>
+      <p id="about-message" class="form-message" aria-live="polite"></p>
+    </form>
+  </dialog>
+
+  <p id="portal-toast" class="portal-toast" role="status" aria-live="polite"></p>
 
   <script src="script.js"></script>
 </body>

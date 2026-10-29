@@ -1,7 +1,9 @@
 :root {
+  color-scheme: light;
   --ink: #17202a;
   --muted: #667085;
   --panel: rgba(255, 255, 255, 0.86);
+  --surface: #ffffff;
   --line: rgba(23, 32, 42, 0.12);
   --teal: #0f766e;
   --teal-dark: #115e59;
@@ -10,6 +12,26 @@
   --blue: #2563eb;
   --red: #dc3545;
   --shadow: 0 24px 80px rgba(25, 35, 49, 0.16);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #f4fbfa;
+  --muted: #b9c6c6;
+  --panel: rgba(21, 32, 37, 0.93);
+  --surface: #18242a;
+  --line: rgba(238, 248, 247, 0.16);
+  --teal: #34b9ad;
+  --teal-dark: #8ee7de;
+  --coral: #ff927c;
+  --gold: #ffd06b;
+  --blue: #84a9ff;
+  --red: #ff7181;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+:root[data-text-scale="large"] {
+  font-size: 112.5%;
 }
 
 * {
@@ -25,6 +47,14 @@ body {
     linear-gradient(135deg, rgba(15, 118, 110, 0.14), transparent 34%),
     linear-gradient(315deg, rgba(249, 115, 91, 0.16), transparent 30%),
     #eef3f2;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+:root[data-theme="dark"] body {
+  background:
+    linear-gradient(135deg, rgba(52, 185, 173, 0.14), transparent 38%),
+    linear-gradient(315deg, rgba(255, 113, 129, 0.12), transparent 36%),
+    #10191d;
 }
 
 button,
@@ -38,6 +68,14 @@ button {
   cursor: pointer;
 }
 
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.6);
+  outline-offset: 2px;
+}
+
 textarea {
   resize: vertical;
 }
@@ -47,6 +85,46 @@ textarea {
   min-height: 100vh;
   margin: 0 auto;
   padding: 34px 0;
+}
+
+.utility-bar {
+  position: fixed;
+  z-index: 10;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 6px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  box-shadow: 0 10px 30px rgba(25, 35, 49, 0.14);
+  backdrop-filter: blur(18px);
+}
+
+.utility-button,
+.icon-button {
+  border: 0;
+  color: var(--ink);
+  background: transparent;
+  font-weight: 800;
+}
+
+.utility-button {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+}
+
+.utility-button:hover,
+.utility-button:focus-visible,
+.icon-button:hover,
+.icon-button:focus-visible {
+  background: rgba(23, 32, 42, 0.1);
+}
+
+.utility-button span[aria-hidden="true"] {
+  margin-right: 5px;
 }
 
 .login-view {
@@ -209,6 +287,11 @@ h4 {
   font-weight: 700;
 }
 
+:root[data-theme="dark"] .field,
+:root[data-theme="dark"] .setting-toggle {
+  color: var(--ink);
+}
+
 .compact-field {
   min-width: 180px;
 }
@@ -229,6 +312,16 @@ h4 {
   background: rgba(255, 255, 255, 0.78);
   outline: none;
   transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+:root[data-theme="dark"] .field input,
+:root[data-theme="dark"] .field select,
+:root[data-theme="dark"] .field textarea,
+:root[data-theme="dark"] .result-subject-row input,
+:root[data-theme="dark"] #result-subjects input {
+  color: var(--ink);
+  border-color: var(--line);
+  background: rgba(7, 14, 17, 0.46);
 }
 
 .field textarea {
@@ -389,6 +482,66 @@ h4 {
   gap: 14px;
 }
 
+.record,
+.state-card {
+  display: grid;
+  gap: 14px;
+  align-items: center;
+  min-height: 86px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.record {
+  grid-template-columns: minmax(180px, 1fr) minmax(120px, 220px) auto;
+}
+
+.record h4,
+.record p,
+.state-card h2,
+.state-card p {
+  margin-bottom: 4px;
+}
+
+.state-card {
+  place-items: center;
+  align-content: center;
+  min-height: 180px;
+  text-align: center;
+}
+
+.actions-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actions-inline button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 7px;
+  padding: 0 12px;
+  color: var(--ink);
+  background: rgba(23, 32, 42, 0.08);
+  font-weight: 800;
+}
+
+.actions-inline button[data-delete-student],
+.actions-inline button[data-delete-staff],
+.actions-inline button[data-delete-department],
+.actions-inline button[data-delete-class],
+.actions-inline button[data-delete-parent],
+.actions-inline button[data-delete-result] {
+  color: #fff;
+  background: var(--red);
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
 .subjects-editor {
   display: grid;
   gap: 10px;
@@ -542,6 +695,10 @@ h4 {
   background: #fff;
 }
 
+:root[data-theme="dark"] .score-grid div {
+  background: var(--surface);
+}
+
 .score-grid strong {
   display: block;
   margin-top: 10px;
@@ -597,6 +754,184 @@ h4 {
   border: 0;
 }
 
+.panel-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 24px;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 14px;
+}
+
+.table-wrap table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table-wrap th,
+.table-wrap td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.table-wrap th {
+  font-size: 0.825rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  background: rgba(0, 0, 0, 0.02);
+}
+
+.ghost-button.compact {
+  padding: 4px 10px;
+  font-size: 0.85rem;
+}
+
+.portal-dialog {
+  width: min(100% - 32px, 530px);
+  max-height: min(720px, calc(100vh - 32px));
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 0;
+  color: var(--ink);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.portal-dialog::backdrop {
+  background: rgba(10, 18, 22, 0.56);
+  backdrop-filter: blur(3px);
+}
+
+.dialog-content {
+  display: grid;
+  gap: 18px;
+  padding: 24px;
+}
+
+.dialog-heading,
+.dialog-actions,
+.setting-toggle,
+.demo-accounts dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dialog-heading h2 {
+  margin-bottom: 0;
+}
+
+.icon-button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+.setting-toggle {
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+}
+
+.setting-toggle strong,
+.setting-toggle small {
+  display: block;
+}
+
+.setting-toggle small,
+.dialog-copy {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.setting-toggle input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--teal);
+}
+
+.demo-accounts {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: rgba(23, 32, 42, 0.05);
+}
+
+.demo-accounts .eyebrow {
+  margin-bottom: 10px;
+}
+
+.demo-accounts dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.demo-accounts dt {
+  font-weight: 800;
+}
+
+.demo-accounts dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+code {
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: var(--ink);
+  background: rgba(23, 32, 42, 0.1);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+.portal-toast {
+  position: fixed;
+  z-index: 20;
+  right: 20px;
+  bottom: 20px;
+  max-width: min(440px, calc(100% - 40px));
+  margin: 0;
+  padding: 13px 16px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--teal);
+  box-shadow: var(--shadow);
+  font-weight: 800;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.portal-toast[data-type="error"] {
+  background: var(--red);
+}
+
+.portal-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+:root[data-reduced-motion="true"] *,
+:root[data-reduced-motion="true"] *::before,
+:root[data-reduced-motion="true"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+  transition-duration: 0.01ms !important;
+}
+
 .hidden {
   display: none;
 }
@@ -605,7 +940,8 @@ h4 {
   .login-view,
   .admin-grid,
   .structure-grid,
-  .profile-grid {
+  .profile-grid,
+  .panel-layout {
     grid-template-columns: 1fr;
   }
 
@@ -635,14 +971,40 @@ h4 {
 
   .brand-row,
   .marksheet-top,
-  .marksheet-footer {
+  .marksheet-footer,
+  .dialog-actions {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .sample-strip,
-  .score-grid {
+  .score-grid,
+  .two-col {
     grid-template-columns: 1fr;
+  }
+
+  .record {
+    grid-template-columns: 1fr;
+  }
+
+  .utility-bar {
+    top: 10px;
+    right: 10px;
+  }
+
+  .utility-button {
+    min-height: 32px;
+    padding: 0 9px;
+    font-size: 0.82rem;
+  }
+
+  .dialog-content {
+    padding: 20px;
+  }
+
+  .demo-accounts dl > div {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
   }
 
   .subject-row {
@@ -662,6 +1024,9 @@ h4 {
   }
 
   .login-view,
+  .utility-bar,
+  .portal-dialog,
+  .portal-toast,
   .state-card,
   .ghost-button {
     display: none;

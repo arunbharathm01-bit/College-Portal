@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "aiven": {
+      "type": "http",
+      "url": "https://mcp.aiven.live/mcp"
+    }
+  }
+}
