@@ -7,15 +7,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="utility-bar" aria-label="Portal options">
-    <button id="settings-toggle" class="utility-button" type="button" aria-haspopup="dialog" aria-controls="settings-dialog">
-      <span aria-hidden="true">⚙</span><span>Settings</span>
-    </button>
-    <button id="about-toggle" class="utility-button" type="button" aria-haspopup="dialog" aria-controls="about-dialog">
-      <span aria-hidden="true">i</span><span>About</span>
-    </button>
-  </div>
-
   <main class="app-shell">
     <section id="login-view" class="login-view">
       <div class="brand-block">
@@ -26,7 +17,7 @@
       </div>
 
       <div class="login-card">
-        <div class="role-tabs" aria-label="Choose login type">
+        <div class="role-tabs" aria-label="Choose portal type">
           <button class="active" type="button" data-login-tab="student">Student</button>
           <button type="button" data-login-tab="management">Management</button>
         </div>
@@ -44,8 +35,9 @@
         </form>
 
         <form id="management-login" class="login-form hidden" autocomplete="off">
-          <div class="role-tabs compact-tabs" aria-label="Choose management role">
+          <div class="role-tabs compact-tabs management-tabs" aria-label="Choose management portal">
             <button class="active" type="button" data-management-role="teacher">Teacher</button>
+            <button type="button" data-management-role="hod">HOD Portal</button>
             <button type="button" data-management-role="admin">Administration</button>
           </div>
           <label class="field">
@@ -56,79 +48,180 @@
             <span>Password</span>
             <input id="management-password" type="password" required>
           </label>
-          <button class="primary-button" type="submit">Open Management Page</button>
+          <button id="management-login-submit" class="primary-button" type="submit">Open Teacher Portal</button>
         </form>
 
         <p id="login-message" class="form-message" aria-live="polite"></p>
       </div>
+
+      <section class="placement-logs" aria-labelledby="placement-logs-title">
+        <div class="placement-logs-heading">
+          <div>
+            <p class="eyebrow">Career Centre · Live Desk</p>
+            <h2 id="placement-logs-title">Placement Logs</h2>
+          </div>
+          <span class="live-pill"><span aria-hidden="true"></span>Regional hiring live</span>
+        </div>
+        <div class="placement-ticker" aria-label="Regional campus hiring updates">
+          <div class="placement-ticker-track">
+            <article><strong>Zoho</strong><span>12 offers · Chennai</span></article>
+            <article><strong>Cognizant</strong><span>34 shortlisted · Coimbatore</span></article>
+            <article><strong>TCS</strong><span>Campus drive · Madurai</span></article>
+            <article><strong>Freshworks</strong><span>8 internships · Chennai</span></article>
+            <article><strong>Infosys</strong><span>22 assessments · Salem</span></article>
+            <article aria-hidden="true"><strong>Zoho</strong><span>12 offers · Chennai</span></article>
+            <article aria-hidden="true"><strong>Cognizant</strong><span>34 shortlisted · Coimbatore</span></article>
+            <article aria-hidden="true"><strong>TCS</strong><span>Campus drive · Madurai</span></article>
+          </div>
+        </div>
+      </section>
     </section>
 
-    <section id="student-view" class="workspace hidden">
-      <header class="topbar">
+    <section id="student-view" class="workspace student-workspace hidden">
+      <header class="student-header">
         <div>
-          <p class="eyebrow">Student Page</p>
+          <p class="eyebrow">Student Gateway</p>
           <h2 id="student-heading">Student Dashboard</h2>
         </div>
-        <div class="actions">
-          <button id="student-print" class="ghost-button" type="button">Print</button>
-          <button class="danger-button logout-button" type="button">Logout</button>
-        </div>
+        <button class="danger-button logout-button" type="button">Logout</button>
       </header>
 
-      <nav class="section-tabs" aria-label="Student sections">
-        <button class="active" type="button" data-student-section="profile">Profile</button>
-        <button type="button" data-student-section="news">Campus News</button>
-        <button type="button" data-student-section="schedule">Exam Schedule</button>
-        <button type="button" data-student-section="assessments">Assessments</button>
-        <button type="button" data-student-section="classroom">Classroom</button>
-        <button type="button" data-student-section="results">Results</button>
-        <button type="button" data-student-section="review">Environment Review</button>
-      </nav>
+      <div class="student-gateway-layout">
+        <aside class="student-sidebar" aria-label="Student gateway navigation">
+          <div class="student-sidebar-brand">
+            <span class="student-sidebar-mark" aria-hidden="true">CP</span>
+            <div><strong>Campus Portal</strong><small>Student Gateway</small></div>
+          </div>
+          <nav class="student-nav" aria-label="Student sections">
+            <button class="active" type="button" data-student-section="profile"><span aria-hidden="true">◉</span>Profile</button>
+            <button type="button" data-student-section="timetable"><span aria-hidden="true">▦</span>Time Table</button>
+            <button type="button" data-student-section="classroom"><span aria-hidden="true">▤</span>Classroom</button>
+            <button type="button" data-student-section="results"><span aria-hidden="true">✓</span>Results</button>
+            <button type="button" data-student-section="news"><span aria-hidden="true">◎</span>News</button>
+            <button type="button" data-student-section="review"><span aria-hidden="true">★</span>Review</button>
+            <button type="button" data-student-section="support"><span aria-hidden="true">?</span>Support</button>
+          </nav>
+          <div class="student-sidebar-footer">
+            <button type="button" data-student-section="settings"><span aria-hidden="true">⚙</span>Settings &amp; About</button>
+          </div>
+        </aside>
 
-      <section id="student-profile" class="content-panel"></section>
-      <section id="student-news" class="content-panel hidden"></section>
-      <section id="student-schedule" class="content-panel hidden"></section>
-      <section id="student-assessments" class="content-panel hidden"></section>
-      <section id="student-classroom" class="content-panel hidden"></section>
-      <section id="student-results" class="content-panel hidden"></section>
-      <section id="student-review" class="content-panel hidden">
-        <div class="panel-title">
-          <div>
-            <p class="eyebrow">Campus Experience</p>
-            <h3>Review Of Environment</h3>
-          </div>
+        <div class="student-content-area">
+          <section id="student-profile" class="content-panel"></section>
+          <section id="student-timetable" class="content-panel hidden"></section>
+          <section id="student-classroom" class="content-panel hidden"></section>
+          <section id="student-results" class="content-panel hidden"></section>
+          <section id="student-news" class="content-panel hidden"></section>
+
+          <section id="student-review" class="content-panel hidden">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Campus Experience</p>
+                <h3>Review the Environment</h3>
+              </div>
+            </div>
+            <form id="review-form" class="stack-form" autocomplete="off">
+              <input id="review-rating" type="hidden" required>
+              <div class="review-rating-block">
+                <div>
+                  <p class="field-label">Your rating</p>
+                  <p id="review-rating-copy" class="muted">Choose a rating from 1 to 5 stars.</p>
+                </div>
+                <div id="review-stars" class="star-rating" role="radiogroup" aria-label="Rate your campus experience">
+                  <button type="button" data-review-star="1" role="radio" aria-checked="false" aria-label="1 star">★</button>
+                  <button type="button" data-review-star="2" role="radio" aria-checked="false" aria-label="2 stars">★</button>
+                  <button type="button" data-review-star="3" role="radio" aria-checked="false" aria-label="3 stars">★</button>
+                  <button type="button" data-review-star="4" role="radio" aria-checked="false" aria-label="4 stars">★</button>
+                  <button type="button" data-review-star="5" role="radio" aria-checked="false" aria-label="5 stars">★</button>
+                </div>
+              </div>
+              <label class="field">
+                <span>Area</span>
+                <select id="review-area" required>
+                  <option value="Classroom">Classroom</option>
+                  <option value="Campus Cleanliness">Campus Cleanliness</option>
+                  <option value="Library">Library</option>
+                  <option value="Lab">Lab</option>
+                  <option value="Transport">Transport</option>
+                  <option value="Hostel">Hostel</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Feedback remarks</span>
+                <textarea id="review-text" rows="7" placeholder="Share detailed feedback about your experience..." required></textarea>
+              </label>
+              <button class="primary-button" type="submit">Submit Review</button>
+              <p id="review-message" class="form-message" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section id="student-support" class="content-panel hidden">
+            <div class="panel-title">
+              <div>
+                <p class="eyebrow">Student Support</p>
+                <h3>Campus Assistant</h3>
+              </div>
+              <span class="live-pill"><span aria-hidden="true"></span>Online</span>
+            </div>
+            <div class="ai-helper" aria-label="Campus Assistant preview">
+              <div class="ai-helper-top"><span class="ai-helper-orb" aria-hidden="true">AI</span><div><strong>Campus Assistant</strong><small>Typical response time: under 2 minutes</small></div></div>
+              <div class="ai-chat-log">
+                <p class="ai-message assistant">Hello! I can help you find classrooms, resources, and support contacts.</p>
+                <p class="ai-message student">Where can I find my department timetable?</p>
+                <p class="ai-message assistant">Open Time Table in the student navigation for HOD-approved schedules.</p>
+              </div>
+              <div class="ai-chat-input"><span>Ask Campus Assistant…</span><button type="button" disabled aria-label="Send message">↑</button></div>
+            </div>
+            <div class="support-roster">
+              <div class="panel-title"><div><p class="eyebrow">Administrative contacts</p><h3>Management Roster</h3></div></div>
+              <div class="contact-grid">
+                <article><strong>Dr. Meera Nair</strong><span>Principal</span><a href="mailto:principal@college.edu">principal@college.edu</a><small>Ext. 100</small></article>
+                <article><strong>Prof. R. Kannan</strong><span>Academic Dean</span><a href="mailto:academics@college.edu">academics@college.edu</a><small>Ext. 214</small></article>
+                <article><strong>Ms. Priya Shah</strong><span>Student Affairs</span><a href="mailto:students@college.edu">students@college.edu</a><small>Ext. 302</small></article>
+                <article><strong>Mr. Naveen Kumar</strong><span>IT Helpdesk</span><a href="mailto:helpdesk@college.edu">helpdesk@college.edu</a><small>Ext. 118</small></article>
+              </div>
+            </div>
+            <a class="bug-report-link" href="mailto:Arunbharathm01@://gmail.com">Report a portal issue to Arunbharathm01@://gmail.com</a>
+          </section>
+
+          <section id="student-settings" class="content-panel hidden">
+            <div class="panel-title">
+              <div><p class="eyebrow">Personal Preferences</p><h3>Settings &amp; About</h3></div>
+            </div>
+            <div class="student-settings-grid">
+              <form id="student-settings-form" class="stack-form" autocomplete="off">
+                <label class="field">
+                  <span>Theme</span>
+                  <select id="student-theme-select">
+                    <option value="light">Light</option>
+                    <option value="dark">Dark</option>
+                    <option value="system">Use device setting</option>
+                  </select>
+                </label>
+                <label class="setting-toggle" for="student-large-text-toggle"><span><strong>Larger text</strong><small>Increase the default reading size.</small></span><input id="student-large-text-toggle" type="checkbox" role="switch"></label>
+                <label class="setting-toggle" for="student-reduced-motion-toggle"><span><strong>Reduce motion</strong><small>Limit interface transitions.</small></span><input id="student-reduced-motion-toggle" type="checkbox" role="switch"></label>
+                <label class="field">
+                  <span>Google AI Studio Configuration</span>
+                  <input id="user-gemini-api-key" type="password" autocomplete="off" placeholder="Enter API authorization string">
+                </label>
+                <button class="primary-button" type="submit">Save local settings</button>
+                <p id="student-settings-message" class="form-message" aria-live="polite"></p>
+              </form>
+              <article class="about-portal-card">
+                <p class="eyebrow">About the Portal</p>
+                <h3>One home for campus life</h3>
+                <p>This browser-based portal brings academic updates, faculty resources, results, and student support into one private gateway.</p>
+                <p class="muted">Your preferences and API authorization string stay in this browser only. Do not enter production secrets on a shared device.</p>
+              </article>
+            </div>
+          </section>
         </div>
-        <form id="review-form" class="stack-form" autocomplete="off">
-          <div class="two-col">
-            <label class="field">
-              <span>Rating</span>
-              <select id="review-rating" required>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Average">Average</option>
-                <option value="Needs Improvement">Needs Improvement</option>
-              </select>
-            </label>
-            <label class="field">
-              <span>Area</span>
-              <select id="review-area" required>
-                <option value="Classroom">Classroom</option>
-                <option value="Campus Cleanliness">Campus Cleanliness</option>
-                <option value="Library">Library</option>
-                <option value="Lab">Lab</option>
-                <option value="Transport">Transport</option>
-                <option value="Hostel">Hostel</option>
-              </select>
-            </label>
-          </div>
-          <label class="field">
-            <span>Review</span>
-            <textarea id="review-text" rows="5" required></textarea>
-          </label>
-          <button class="primary-button" type="submit">Submit Review</button>
-          <p id="review-message" class="form-message"></p>
-        </form>
-      </section>
+      </div>
+    </section>
+
+    <section id="hod-view" class="workspace hod-workspace hidden">
+      <header class="topbar"><div><p class="eyebrow">Academic Leadership</p><h2>HOD Portal</h2></div><button class="danger-button logout-button" type="button">Logout</button></header>
+      <div class="content-panel"><p class="eyebrow">Department Gateway</p><h3>HOD access verified</h3><p class="lead">Use this dedicated entry tier to coordinate HOD-approved schedules and departmental academic updates.</p></div>
     </section>
 
     <section id="teacher-view" class="workspace hidden">
@@ -681,78 +774,6 @@
       </section>
     </section>
   </main>
-
-  <dialog id="settings-dialog" class="portal-dialog" aria-labelledby="settings-title">
-    <form method="dialog" class="dialog-content">
-      <div class="dialog-heading">
-        <div>
-          <p class="eyebrow">Portal preferences</p>
-          <h2 id="settings-title">Settings</h2>
-        </div>
-        <button class="icon-button" value="cancel" aria-label="Close settings" type="submit">×</button>
-      </div>
-
-      <label class="field">
-        <span>Theme</span>
-        <select id="theme-select">
-          <option value="system">Use device setting</option>
-          <option value="light">Light</option>
-          <option value="dark">Dark</option>
-        </select>
-      </label>
-
-      <label class="setting-toggle" for="large-text-toggle">
-        <span>
-          <strong>Larger text</strong>
-          <small>Increase the default reading size.</small>
-        </span>
-        <input id="large-text-toggle" type="checkbox" role="switch">
-      </label>
-
-      <label class="setting-toggle" for="reduced-motion-toggle">
-        <span>
-          <strong>Reduce motion</strong>
-          <small>Limit interface transitions.</small>
-        </span>
-        <input id="reduced-motion-toggle" type="checkbox" role="switch">
-      </label>
-
-      <div class="dialog-actions">
-        <button id="reset-preferences" class="ghost-button" type="button">Restore defaults</button>
-        <button class="primary-button" value="close" type="submit">Done</button>
-      </div>
-      <p id="settings-message" class="form-message" aria-live="polite"></p>
-    </form>
-  </dialog>
-
-  <dialog id="about-dialog" class="portal-dialog" aria-labelledby="about-title">
-    <form method="dialog" class="dialog-content">
-      <div class="dialog-heading">
-        <div>
-          <p class="eyebrow">Campus Management Portal</p>
-          <h2 id="about-title">About this demo</h2>
-        </div>
-        <button class="icon-button" value="cancel" aria-label="Close about dialog" type="submit">×</button>
-      </div>
-
-      <p class="dialog-copy">A browser-only demonstration of student, teacher, and administration workflows. Records and preferences are stored only in this browser.</p>
-
-      <div class="demo-accounts">
-        <p class="eyebrow">Demo sign-in accounts</p>
-        <dl>
-          <div><dt>Student</dt><dd><code>2026CSE01</code> · DOB <code>2004-05-15</code></dd></div>
-          <div><dt>Teacher</dt><dd><code>teacher</code> · <code>Teacher@2026</code></dd></div>
-          <div><dt>Administration</dt><dd><code>admin</code> · <code>Admin@2026</code></dd></div>
-        </dl>
-      </div>
-
-      <div class="dialog-actions">
-        <button id="copy-demo-accounts" class="ghost-button" type="button">Copy demo accounts</button>
-        <button class="primary-button" value="close" type="submit">Close</button>
-      </div>
-      <p id="about-message" class="form-message" aria-live="polite"></p>
-    </form>
-  </dialog>
 
   <p id="portal-toast" class="portal-toast" role="status" aria-live="polite"></p>
 

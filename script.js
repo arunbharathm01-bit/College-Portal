@@ -2,10 +2,12 @@ const ADMIN_USERNAME = "admin";
 const ADMIN_PASSWORD = "Admin@2026";
 const TEACHER_USERNAME = "teacher";
 const TEACHER_PASSWORD = "Teacher@2026";
+const HOD_USERNAME = "hod";
+const HOD_PASSWORD = "HOD@2026";
 const STORAGE_KEY = "campusManagementPortal.v1";
 const PREFERENCES_KEY = "campusManagementPortal.preferences.v1";
 const DEFAULT_PREFERENCES = {
-  theme: "system",
+  theme: "light",
   largeText: false,
   reducedMotion: false
 };
@@ -31,7 +33,8 @@ const defaultState = {
       parentName: "Robert Morgan",
       parentPhone: "+1 555-0193",
       address: "104 Campus Avenue, University Town",
-      admissionType: "Regular"
+      admissionType: "Regular",
+      avatarUrl: ""
     }
   ],
   staff: [
@@ -66,6 +69,11 @@ const defaultState = {
       details: "Hall A, Main Academic Block - 10:00 AM to 1:00 PM"
     }
   ],
+  classSchedules: [
+    { id: "class-sched-01", departmentId: "dept-cse", classId: "class-cse-1a", day: "Monday", time: "09:00 – 10:00", subject: "Data Structures", venue: "Lab 204", faculty: "Dr. Sarah Jenkins" },
+    { id: "class-sched-02", departmentId: "dept-cse", classId: "class-cse-1a", day: "Wednesday", time: "11:00 – 12:00", subject: "Mathematics I", venue: "A-102", faculty: "Prof. Vikram Rao" },
+    { id: "class-sched-03", departmentId: "dept-cse", classId: "class-cse-1a", day: "Friday", time: "14:00 – 16:00", subject: "Programming Lab", venue: "Lab 204", faculty: "Dr. Sarah Jenkins" }
+  ],
   assessments: [
     {
       id: "assmt-01",
@@ -88,6 +96,10 @@ const defaultState = {
       teacherName: "Dr. Sarah Jenkins",
       date: "2026-07-23"
     }
+  ],
+  resources: [
+    { id: "resource-01", title: "Binary Search Tree Reference Notes", type: "PDF", url: "#classroom-resource-01", description: "Faculty resource for the current module.", departmentId: "dept-cse", classId: "class-cse-1a", uploadedBy: "Dr. Sarah Jenkins", date: "2026-07-23" },
+    { id: "resource-02", title: "Graph Traversal Lab Starter Files", type: "ZIP", url: "#classroom-resource-02", description: "Starter material for the week 4 lab.", departmentId: "dept-cse", classId: "class-cse-1a", uploadedBy: "Dr. Sarah Jenkins", date: "2026-07-24" }
   ],
   reviews: [
     {
@@ -112,7 +124,13 @@ const defaultState = {
         { name: "Digital Logic", code: "EC102", mark: 85, credit: 3, grade: "A+", status: "Pass" },
         { name: "Mathematics I", code: "MA101", mark: 78, credit: 4, grade: "A", status: "Pass" }
       ],
-      publishedDate: "2026-07-01"
+      publishedDate: "2026-07-01",
+      reportCard: {
+        name: "Semester 1 Verified Report Card.pdf",
+        url: "#secure-report-card-res-01",
+        uploadedBy: "Administration",
+        uploadedDate: "2026-07-01"
+      }
     }
   ],
   parents: [
@@ -145,6 +163,7 @@ const qa = (selector) => [...document.querySelectorAll(selector)];
 const views = {
   login: q("#login-view"),
   student: q("#student-view"),
+  hod: q("#hod-view"),
   teacher: q("#teacher-view"),
   admin: q("#admin-view")
 };
@@ -227,11 +246,11 @@ function applyPreferences() {
   document.documentElement.dataset.textScale = preferences.largeText ? "large" : "default";
   document.documentElement.dataset.reducedMotion = String(preferences.reducedMotion);
 
-  const themeSelect = q("#theme-select");
+  const themeSelect = q("#student-theme-select");
   if (themeSelect) themeSelect.value = preferences.theme;
-  const largeTextToggle = q("#large-text-toggle");
+  const largeTextToggle = q("#student-large-text-toggle");
   if (largeTextToggle) largeTextToggle.checked = preferences.largeText;
-  const reducedMotionToggle = q("#reduced-motion-toggle");
+  const reducedMotionToggle = q("#student-reduced-motion-toggle");
   if (reducedMotionToggle) reducedMotionToggle.checked = preferences.reducedMotion;
 }
 
@@ -239,19 +258,37 @@ function updatePreferences(nextPreferences, message = "Settings saved.") {
   preferences = { ...preferences, ...nextPreferences };
   savePreferences();
   applyPreferences();
-  showMessage(q("#settings-message"), message, "success");
-}
-
-function openDialog(id) {
-  const dialog = q(id);
-  if (!dialog) return;
-  if (typeof dialog.showModal === "function") dialog.showModal();
-  else dialog.setAttribute("open", "");
+  showMessage(q("#student-settings-message"), message, "success");
 }
 
 function matchesStudentScope(item, student) {
   return (!item.departmentId || item.departmentId === student.departmentId) &&
     (!item.classId || item.classId === student.classId);
+}
+
+function safeDocumentLink(value, fallback = "#") {
+  const href = String(value || "").trim();
+  return /^(#|https?:\/\/|mailto:)/i.test(href) ? href : fallback;
+}
+
+function studentAvatarUrl(student) {
+  if (student.avatarUrl) return student.avatarUrl;
+  const initials = student.name.split(/\s+/).map((part) => part[0]).join("").slice(0, 2).replace(/[^a-z0-9]/gi, "").toUpperCase() || "ST";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><rect width="160" height="160" rx="32" fill="#d9f3ef"/><circle cx="80" cy="60" r="30" fill="#0f766e"/><path d="M28 142c7-34 27-50 52-50s45 16 52 50" fill="#0f766e"/><text x="80" y="150" fill="#ffffff" font-family="Arial,sans-serif" font-size="20" font-weight="700" text-anchor="middle">${initials}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+}
+
+function updateReviewStars(value, persist = false) {
+  const rating = Number(value) || 0;
+  const ratingInput = q("#review-rating");
+  if (persist && ratingInput) ratingInput.value = rating ? String(rating) : "";
+  qa("[data-review-star]").forEach((star) => {
+    const isActive = Number(star.dataset.reviewStar) <= rating;
+    star.classList.toggle("active", isActive);
+    if (persist) star.setAttribute("aria-checked", String(Number(star.dataset.reviewStar) === rating));
+  });
+  const copy = q("#review-rating-copy");
+  if (copy) copy.textContent = rating ? `${rating} out of 5 stars selected.` : "Choose a rating from 1 to 5 stars.";
 }
 
 function escapeHtml(value) {
@@ -801,8 +838,7 @@ function renderStudentPage(student) {
   if (q("#student-heading")) q("#student-heading").textContent = student.name;
   renderStudentProfile(student);
   renderStudentNews();
-  renderStudentSchedule();
-  renderStudentAssessments();
+  renderStudentTimetable();
   renderStudentClassroom();
   renderStudentResults();
   switchStudentSection(activeStudentSection);
@@ -819,11 +855,19 @@ function renderStudentProfile(student) {
 
   profileEl.innerHTML = `
     <div class="profile-grid">
+      <article class="profile-hero wide">
+        <div class="student-avatar-frame"><img src="${escapeHtml(studentAvatarUrl(student))}" alt="${escapeHtml(student.name)} profile avatar"></div>
+        <div>
+          <p class="eyebrow">Student Profile</p>
+          <h3>${escapeHtml(student.name)}</h3>
+          <p class="muted">${escapeHtml(student.rollNumber)} · ${escapeHtml(className(student.classId))}</p>
+          <span class="verified-chip">Verified student record</span>
+        </div>
+        <div class="profile-hero-note"><span>Avatar source</span><strong>Admin-managed record</strong></div>
+      </article>
       <article class="info-card wide">
-        <p class="eyebrow">Student Profile</p>
-        <h3>${escapeHtml(student.name)}</h3>
+        <p class="eyebrow">Academic details</p>
         <div class="details-grid">
-          <span>Roll number</span><strong>${escapeHtml(student.rollNumber)}</strong>
           <span>Department</span><strong>${escapeHtml(departmentName(student.departmentId))}</strong>
           <span>Class</span><strong>${escapeHtml(className(student.classId))}</strong>
           <span>Admission type</span><strong>${escapeHtml(student.admissionType || "Regular")}</strong>
@@ -869,65 +913,63 @@ function renderStudentNews() {
     : `<div class="state-card"><h2>No news yet</h2><p>News bulletins will appear here.</p></div>`;
 }
 
-function renderStudentSchedule() {
-  const panel = q("#student-schedule");
-  if (!panel) return;
-  const items = state.schedules.filter((item) => currentStudent && matchesStudentScope(item, currentStudent));
-  panel.innerHTML = items.length
-    ? items.map((item) => `
-      <article class="info-card">
-        <div class="panel-title">
-          <div>
-            <p class="eyebrow">Exam Schedule</p>
-            <h3>${escapeHtml(item.exam)}</h3>
-          </div>
-          <span class="muted">${escapeHtml(item.date)}</span>
-        </div>
-        <p>${escapeHtml(item.details)}</p>
-      </article>
-    `).join("")
-    : `<div class="state-card"><h2>No schedule yet</h2><p>No exam schedule published for your department.</p></div>`;
-}
+function renderStudentTimetable() {
+  const panel = q("#student-timetable");
+  if (!panel || !currentStudent) return;
+  const classItems = state.classSchedules.filter((item) => matchesStudentScope(item, currentStudent));
+  const examItems = state.schedules.filter((item) => matchesStudentScope(item, currentStudent));
+  const approvalBadge = '<span class="hod-approved">✓ HOD Approved</span>';
 
-function renderStudentAssessments() {
-  const panel = q("#student-assessments");
-  if (!panel) return;
-  const items = state.assessments.filter((item) => currentStudent && matchesStudentScope(item, currentStudent));
-  panel.innerHTML = items.length
-    ? items.map((item) => `
-      <article class="info-card">
-        <div class="panel-title">
-          <div>
-            <p class="eyebrow">Assessment</p>
-            <h3>${escapeHtml(item.title)}</h3>
-          </div>
-          <span class="muted">Due ${escapeHtml(item.dueDate)}</span>
+  panel.innerHTML = `
+    <div class="panel-title"><div><p class="eyebrow">Academic Planner</p><h3>Time Table</h3></div></div>
+    <div class="timetable-grid">
+      <section class="timetable-group">
+        <header><div><p class="eyebrow">Weekly learning plan</p><h4>Class Schedule</h4></div>${approvalBadge}</header>
+        <div class="schedule-list">
+          ${classItems.length ? classItems.map((item) => `
+            <article class="schedule-row"><span class="schedule-day">${escapeHtml(item.day)}</span><div><strong>${escapeHtml(item.subject)}</strong><small>${escapeHtml(item.faculty)} · ${escapeHtml(item.venue)}</small></div><time>${escapeHtml(item.time)}</time></article>
+          `).join("") : '<p class="muted">No class schedule has been published for your group.</p>'}
         </div>
-        <p>${escapeHtml(item.description)}</p>
-      </article>
-    `).join("")
-    : `<div class="state-card"><h2>No assessments yet</h2><p>Assessments assigned to your class will appear here.</p></div>`;
+      </section>
+      <section class="timetable-group">
+        <header><div><p class="eyebrow">Examination office</p><h4>Exam Schedule</h4></div>${approvalBadge}</header>
+        <div class="schedule-list">
+          ${examItems.length ? examItems.map((item) => `
+            <article class="schedule-row"><span class="schedule-day">Exam</span><div><strong>${escapeHtml(item.exam)}</strong><small>${escapeHtml(item.details)}</small></div><time>${escapeHtml(item.date)}</time></article>
+          `).join("") : '<p class="muted">No exam schedule has been published for your group.</p>'}
+        </div>
+      </section>
+    </div>
+  `;
 }
 
 function renderStudentClassroom() {
   const panel = q("#student-classroom");
-  if (!panel) return;
-  const items = state.classroomPosts.filter((item) => currentStudent && matchesStudentScope(item, currentStudent));
-  panel.innerHTML = items.length
-    ? items.map((item) => `
-      <article class="info-card">
-        <div class="panel-title">
-          <div>
-            <p class="eyebrow">Classroom</p>
-            <h3>${escapeHtml(item.title)}</h3>
-          </div>
-          <span class="muted">${escapeHtml(item.date)}</span>
-        </div>
-        <p>${escapeHtml(item.message)}</p>
-        <p class="muted">Posted by ${escapeHtml(item.teacherName)}</p>
-      </article>
-    `).join("")
-    : `<div class="state-card"><h2>No announcements yet</h2><p>Teacher announcements will appear here.</p></div>`;
+  if (!panel || !currentStudent) return;
+  const announcements = state.classroomPosts.filter((item) => matchesStudentScope(item, currentStudent));
+  const assessments = state.assessments.filter((item) => matchesStudentScope(item, currentStudent));
+  const resources = state.resources.filter((item) => matchesStudentScope(item, currentStudent));
+
+  panel.innerHTML = `
+    <div class="panel-title"><div><p class="eyebrow">Faculty Workspace</p><h3>Classroom</h3></div></div>
+    <div class="classroom-layout">
+      <section class="classroom-feed">
+        <h4>Faculty updates</h4>
+        ${announcements.length ? announcements.map((item) => `
+          <article class="classroom-post"><div><p class="eyebrow">Announcement · ${escapeHtml(item.date)}</p><h4>${escapeHtml(item.title)}</h4></div><p>${escapeHtml(item.message)}</p><small>Posted by ${escapeHtml(item.teacherName)}</small></article>
+        `).join("") : '<p class="muted">No classroom announcements yet.</p>'}
+      </section>
+      <section class="classroom-resources" id="classroom-resources">
+        <h4>Links &amp; documents</h4>
+        ${resources.map((item) => `
+          <a class="resource-node" href="${escapeHtml(safeDocumentLink(item.url, "#classroom-resources"))}"><span class="resource-filetype">${escapeHtml(item.type)}</span><span><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.description)} · Uploaded by ${escapeHtml(item.uploadedBy)}</small></span><span aria-hidden="true">↗</span></a>
+        `).join("")}
+        ${assessments.map((item) => `
+          <a class="resource-node" href="#assessment-${escapeHtml(item.id)}"><span class="resource-filetype">TASK</span><span><strong>${escapeHtml(item.title)}</strong><small>Due ${escapeHtml(item.dueDate)} · ${escapeHtml(item.description)}</small></span><span aria-hidden="true">↗</span></a>
+        `).join("") || '<p class="muted">No faculty resources have been uploaded yet.</p>'}
+      </section>
+    </div>
+  `;
 }
 
 function renderStudentResults() {
@@ -952,6 +994,11 @@ function renderStudentResults() {
             <div><span>Total</span><strong>${summary.total}/${summary.max}</strong></div>
             <div><span>Percentage</span><strong>${summary.percent}%</strong></div>
             <div><span>GPA</span><strong>${summary.gpa}</strong></div>
+          </div>
+          <div class="report-card-node">
+            <div class="report-pdf-mark" aria-hidden="true">PDF</div>
+            <div><p class="eyebrow">Institutional report card</p><strong>${escapeHtml(result.reportCard?.name || "Report card awaiting administration upload")}</strong><small>${result.reportCard ? `Uploaded by ${escapeHtml(result.reportCard.uploadedBy)} · ${escapeHtml(result.reportCard.uploadedDate)}` : "Only Administration can upload a verified PDF report card."}</small></div>
+            ${result.reportCard?.url ? `<a class="ghost-button small-button" href="${escapeHtml(safeDocumentLink(result.reportCard.url))}" aria-label="Open secure report card PDF">Open secure PDF</a>` : '<span class="report-pending">Pending</span>'}
           </div>
           <div class="table-wrap">
             <table>
@@ -990,7 +1037,7 @@ function switchStudentSection(section) {
   qa("[data-student-section]").forEach((button) => {
     button.classList.toggle("active", button.dataset.studentSection === section);
   });
-  ["profile", "news", "schedule", "assessments", "classroom", "results", "review"].forEach((name) => {
+  ["profile", "timetable", "classroom", "results", "news", "review", "support", "settings"].forEach((name) => {
     const el = q(`#student-${name}`);
     if (el) el.classList.toggle("hidden", name !== section);
   });
@@ -1494,37 +1541,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (preferences.theme === "system") applyPreferences();
   });
 
-  q("#settings-toggle")?.addEventListener("click", () => {
-    showMessage(q("#settings-message"), "");
-    openDialog("#settings-dialog");
-  });
-  q("#about-toggle")?.addEventListener("click", () => {
-    showMessage(q("#about-message"), "");
-    openDialog("#about-dialog");
-  });
-  q("#theme-select")?.addEventListener("change", (event) => {
+  q("#student-theme-select")?.addEventListener("change", (event) => {
     updatePreferences({ theme: event.target.value });
   });
-  q("#large-text-toggle")?.addEventListener("change", (event) => {
+  q("#student-large-text-toggle")?.addEventListener("change", (event) => {
     updatePreferences({ largeText: event.target.checked });
   });
-  q("#reduced-motion-toggle")?.addEventListener("change", (event) => {
+  q("#student-reduced-motion-toggle")?.addEventListener("change", (event) => {
     updatePreferences({ reducedMotion: event.target.checked });
   });
-  q("#reset-preferences")?.addEventListener("click", () => {
-    preferences = { ...DEFAULT_PREFERENCES };
+  const geminiKeyInput = q("#user-gemini-api-key");
+  if (geminiKeyInput) geminiKeyInput.value = localStorage.getItem("user_gemini_api_key") || "";
+  q("#student-settings-form")?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    localStorage.setItem("user_gemini_api_key", q("#user-gemini-api-key").value);
     savePreferences();
-    applyPreferences();
-    showMessage(q("#settings-message"), "Default settings restored.", "success");
-  });
-  q("#copy-demo-accounts")?.addEventListener("click", async () => {
-    const accounts = "Student: 2026CSE01 | DOB: 2004-05-15\nTeacher: teacher | Password: Teacher@2026\nAdministration: admin | Password: Admin@2026";
-    try {
-      await navigator.clipboard.writeText(accounts);
-      showMessage(q("#about-message"), "Demo accounts copied.", "success");
-    } catch {
-      showMessage(q("#about-message"), "Copy is unavailable in this browser. Select the accounts above instead.");
-    }
+    showMessage(q("#student-settings-message"), "Local settings saved to this browser.", "success");
   });
 
   // Login Role Switching
@@ -1538,6 +1570,8 @@ document.addEventListener("DOMContentLoaded", () => {
   qa("[data-management-role]").forEach((button) => button.addEventListener("click", () => {
     managementRole = button.dataset.managementRole;
     setActiveTab(qa("[data-management-role]"), button);
+    const submitButton = q("#management-login-submit");
+    if (submitButton) submitButton.textContent = `Open ${managementRole === "admin" ? "Administration" : managementRole === "hod" ? "HOD" : "Teacher"} Portal`;
     showMessage(q("#login-message"), "");
   }));
 
@@ -1598,23 +1632,45 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    if (managementRole === "hod" && username === HOD_USERNAME && password === HOD_PASSWORD) {
+      showView("hod");
+      return;
+    }
+
     showMessage(q("#login-message"), "Invalid management credentials.");
   });
 
   // Student Environment Review
+  q("#review-stars")?.addEventListener("click", (event) => {
+    const star = event.target.closest("[data-review-star]");
+    if (star) updateReviewStars(star.dataset.reviewStar, true);
+  });
+  q("#review-stars")?.addEventListener("pointerover", (event) => {
+    const star = event.target.closest("[data-review-star]");
+    if (star) updateReviewStars(star.dataset.reviewStar);
+  });
+  q("#review-stars")?.addEventListener("pointerleave", () => {
+    updateReviewStars(q("#review-rating")?.value || 0);
+  });
   q("#review-form")?.addEventListener("submit", (event) => {
     event.preventDefault();
     if (!currentStudent) return;
+    const rating = q("#review-rating").value;
+    if (!rating) {
+      showMessage(q("#review-message"), "Choose a star rating before submitting your review.");
+      return;
+    }
     state.reviews.unshift({
       id: uid("review"),
       rollNumber: currentStudent.rollNumber,
-      rating: q("#review-rating").value,
+      rating: `${rating} / 5`,
       area: q("#review-area").value,
       text: q("#review-text").value.trim(),
       date: today()
     });
     saveState();
     q("#review-form").reset();
+    updateReviewStars(0, true);
     showMessage(q("#review-message"), "Review submitted successfully.", "success");
   });
 
@@ -1773,7 +1829,6 @@ document.addEventListener("DOMContentLoaded", () => {
   q("#reset-staff-form")?.addEventListener("click", resetStaffForm);
   q("#reset-department-form")?.addEventListener("click", resetDepartmentForm);
   q("#reset-class-form")?.addEventListener("click", resetClassForm);
-  q("#student-print")?.addEventListener("click", () => window.print());
   q("#export-json")?.addEventListener("click", exportJson);
   q("#export-csv")?.addEventListener("click", exportCsv);
 
